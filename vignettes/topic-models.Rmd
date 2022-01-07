@@ -22,6 +22,7 @@ library(myScrapers)
 library(tidyverse)
 library(udpipe)
 library(topicmodels)
+library(qgraph)
 
 
 ```
@@ -29,7 +30,7 @@ library(topicmodels)
 This vignette shows how to extract abstracts from Pubmed and perform simple topic modelling on them. It uses functions in the `myScrapers` package which can be downloaded as below.
 
 ```{r}
-if(!require(myScrapers))devtools::install_github("julianflowers/myScrapers")
+if(!require(myScrapers))devtools::install_github("julianflowers12/myScrapers")
 library(myScrapers)
 ```
 
@@ -125,7 +126,7 @@ np %>%
 
 ```{r}
 
-topics <- abstract_topics(k = 10, x = np)
+topics <- abstract_topics(k = 20, x = np)
 topics$model
 
 
@@ -135,7 +136,7 @@ topics$model
 
 ```{r}
 
-topic <- myScrapers::abstract_topic_viz(x = np, m = topics$model, scores = topics$scores, n = 10)
+topic <- myScrapers::abstract_topic_viz(x = np, m = topics$model, scores = topics$scores, n = 20)
 
 ```
 
@@ -143,7 +144,7 @@ topic <- myScrapers::abstract_topic_viz(x = np, m = topics$model, scores = topic
 
 ```{r}
 
-figures <- map(1:10, ~(abstract_topic_viz(x = np, m = topics$model, scores = topics$scores, n = .x)))
+figures <- map(1:20, ~(abstract_topic_viz(x = np, m = topics$model, scores = topics$scores, n = .x)))
 
 
 
