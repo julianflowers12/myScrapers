@@ -11,9 +11,9 @@ pubmedAbstractR <- function(search, n = 1000, ncbi_key = NA, start = 2000, end =
   search <- sprintf("%s&api_key=%s", gsub(" ", "+", search), 
                        ncbi_key)
 
-  n <- n
-  start <- start
-  end <- end
+  n <- 100
+  start <- 2000
+  end <- 2021
   
 s1 <- EUtilsSummary(search, 
                       type = "esearch", 
@@ -32,11 +32,11 @@ fetch <- EUtilsGet(s1, type = "efetch", db = "pubmed")
 #abstracts <- bibliometrix::pubmed2df(fetch)
   
 
-DOI = fetch@PMID
+pmid = fetch@PMID
 abstracts <- as_tibble(cbind(title = fetch@ArticleTitle,
                           abstract = fetch@AbstractText,
-                           journal = fetch@Title,
-                           DOI,
+                           journal = fetch@ISOAbbreviation,
+                           pmid,
                            year = fetch@YearPubmed))
 ## add MeSH headings
 
@@ -44,12 +44,12 @@ if(keyword == TRUE){
 mesh <- purrr::map(fetch@Mesh,  "Heading") %>%
   purrr::map(., data.frame) 
 
-DOI -> names(mesh)
 
 mesh <- mesh %>%
-  bind_rows(., .id = "DOI") %>%
-  rename(keyword = .x..i..) %>%
-  data.frame()
+  enframe() %>%
+  rename(pmid = name, 
+         keyword = value)
+  
 
 abstracts <- left_join(abstracts, mesh)
 }
@@ -60,12 +60,13 @@ authors <- purrr::map(fetch@Author, extract,  c("LastName", "Initials", "order")
   purrr::map(., data.frame)
 
 
-DOI = fetch@PMID
-DOI -> names(authors)
+pmid = fetch@PMID
+pmid -> names(authors)
 
 authors <- authors %>%
-  bind_rows(., .id = "DOI") %>%
-  data.frame()
+  enframe() %>%
+  rename(pmid = name, 
+         authors = value)
 
 ## abstracts
 
