@@ -11,7 +11,7 @@ pubmedAbstractR <- function(search, n = 1000, ncbi_key = NA, start = 2000, end =
   search <- sprintf("%s&api_key=%s", gsub(" ", "+", search), 
                        ncbi_key)
 
-  n <- 100
+  n <- n
   start <- 2000
   end <- 2021
   
